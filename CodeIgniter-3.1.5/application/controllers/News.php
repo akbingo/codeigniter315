@@ -1,0 +1,82 @@
+<?php
+class News extends CI_Controller {
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('news_model');
+        $this->load->helper('url');
+        $this->load->library('pagination');
+        $this->load->model("users_model");
+    }
+
+    public function index()
+    {
+        $config['base_url'] = site_url('news');
+        $config['total_rows'] = $this->db->count_all('news');
+        $config['per_page'] = 5;
+        $config["uri_segment"] = 2;
+
+        $this->pagination->initialize($config);
+
+        $data['news'] = $this->news_model->get_news($slug=FALSE,$config['per_page'],$this->uri->segment(2));
+        $data['title'] = 'News "ideapocket" archive';
+
+        $data["pageinfo"] = $this->pagination->create_links();
+        
+        $this->load->view('templates/header', $data);
+        $this->load->view('news/index', $data);
+        $this->load->view('templates/footer');    
+    }
+
+    public function view($slug = NULL)
+    {
+        $data['news_item'] = $this->news_model->get_news($slug,0,1);
+    
+        if (empty($data['news_item']))
+        {
+            show_404();
+        }
+    
+        $data['title'] = $data['news_item']['title'];
+        $data['author'] = $data['news_item']['author'];
+    
+        $this->load->view('templates/header', $data);
+        $this->load->view('news/view', $data);
+        $this->load->view('templates/footer',$data);
+    }
+
+    public function create()
+    {
+        $this->load->library("session");
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+        
+    
+        $data['title'] = 'Create a news item';
+    
+        $this->form_validation->set_rules('title', 'Title', 'required');
+        $this->form_validation->set_rules('text', 'Text', 'required');
+    
+        if ($this->session->userdata("s_id"))
+        {
+            if ($this->form_validation->run() === FALSE)
+            {
+                $this->load->view('templates/header', $data);
+                $this->load->view('news/create');
+                $this->load->view('templates/footer');
+        
+            }
+            else
+            {
+                $this->news_model->set_news();
+                header("Location: http://localhost:48/");
+            }
+        }
+        else
+        {
+            header("Location: http://localhost:48/signin/index"); 
+        }
+    }
+
+}

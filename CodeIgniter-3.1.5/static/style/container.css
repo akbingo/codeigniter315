@@ -1,0 +1,43 @@
+/*主面板样式*/
+#container {
+    width:100%;
+    margin:0px auto; /*主面板DIV居中*/
+}
+
+/*顶部面板样式*/
+#header {
+    width:100%;
+    height:auto;
+    border:1px green solid;
+    
+}
+
+/*中间部分面板样式*/
+#left {
+    width:69%;
+    height:auto;
+    border:1px red solid;
+}
+
+#right {
+    border:1px blue;
+    text-align: center
+}
+
+/*底部面板样式*/
+#footer {
+    width:100%;
+    height:auto;
+    border:1px #6d487cd8 solid;
+    text-align: center;
+}
+
+.content {
+    float:left;
+    width: 69%;
+    height: auto
+}
+
+.sidebar {
+    
+}
